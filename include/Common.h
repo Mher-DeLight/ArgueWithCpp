@@ -1,6 +1,7 @@
 #pragma once
 #include <array>
 #include <memory>
+#include <ostream>
 #include <string>
 #include <unordered_map>
 #include <vector>
@@ -87,6 +88,7 @@ const std::unordered_map<std::string, TokenType> word_table{
 class Object {
 public:
     virtual ~Object() = default;
+    virtual void print(std::ostream& stream) = 0;
 };
 class Object_Block : public Object {
 public:
@@ -94,4 +96,11 @@ public:
 
     Object_Block(std::vector<std::unique_ptr<Object>> children_) : children(std::move(children_)) {}
     Object_Block() = default;
+    void print(std::ostream& stream) override {
+        stream << "ScopeBlock";
+        for (auto& child : children) {
+            stream << "    ";
+            child->print(stream);
+        }
+    }
 };

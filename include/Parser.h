@@ -30,4 +30,5 @@ private:
 public:
     void load_tokens(std::vector<Token> tokens_);
     void parse();
+    void print_tree();
 };
