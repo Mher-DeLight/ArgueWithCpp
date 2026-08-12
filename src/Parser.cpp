@@ -70,6 +70,8 @@ std::unique_ptr<Object_Block> Parser::parseArgfile() {
 std::unique_ptr<Object> Parser::parseStatement() {
     if (check(TokenType::ObjwordFlag))
         return parseFlag();
+    else if (check(TokenType::ObjwordBuzzword))
+        return parseBuzzword();
     else
         return nullptr;
 }
@@ -112,6 +114,46 @@ std::unique_ptr<Object_Flag> Parser::parseFlag() {
     }
 
     eat(TokenType::Semicolon, "expected semicolon after flag statement");
+
+    return std::make_unique<Object_Flag>(variable_name, flag_text, is_required, std::move(block));
+}
+std::unique_ptr<Object_Flag> Parser::parseBuzzword() {
+    eat(TokenType::ObjwordBuzzword, "expected objword 'buzzword' for buzzword declaration");
+
+    std::string variable_name = buzzword_garbage;
+    std::string flag_text =
+        eat(TokenType::StringLiteral,
+            "expected buzzword text after variable name in 'buzzword' statement")
+            .lexeme;
+
+    bool is_required = false;
+    bool is_ordered = true;
+
+    while (!check(TokenType::LBrace) && !check(TokenType::Semicolon)) {
+        if (check(TokenType::KeywordRequired)) {
+            is_required = true;
+        } else if (check(TokenType::KeywordNotRequired)) {
+            is_required = false;
+        } else if (check(TokenType::KeywordOrdered)) {
+            is_ordered = true;
+        } else if (check(TokenType::KeywordUnordered)) {
+            is_ordered = false;
+        } else {
+            parserPanic("unexpected token '" + peek().lexeme + "' in buzzword declaration",
+                        peek().location);
+        }
+
+        advance();
+    }
+
+    std::unique_ptr<Object_Block> block = nullptr;
+
+    if (check(TokenType::LBrace)) {
+        block = parseScope(true);
+        block->is_ordered = is_ordered;
+    }
+
+    eat(TokenType::Semicolon, "expected semicolon after buzzword statement");
 
     return std::make_unique<Object_Flag>(variable_name, flag_text, is_required, std::move(block));
 }

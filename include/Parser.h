@@ -7,6 +7,7 @@
 
 class Parser {
 private:
+    std::string buzzword_garbage = "kfkbkfhfausgnipcxuimhfdwjqigi"; // buzzword flags are saved here
     std::vector<Token> tokens;
 
     int cursor = 0;
@@ -24,6 +25,7 @@ private:
     std::unique_ptr<Object_Block> parseArgfile();
     std::unique_ptr<Object> parseStatement();
     std::unique_ptr<Object_Flag> parseFlag();
+    std::unique_ptr<Object_Flag> parseBuzzword();
 
 public:
     std::unique_ptr<Object_Block> entry_point = std::make_unique<Object_Block>();
