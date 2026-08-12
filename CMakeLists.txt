@@ -4,7 +4,8 @@ project(ArgueWithCpp VERSION 0.1.0 LANGUAGES CXX)
 option(BUILD_TESTS "Build tests" OFF)
 
 add_library(ArgueWithCpp
-    src/ArgueWithCpp.cpp
+    src/main.cpp
+    src/Tokenizer.cpp
 )
 
 target_include_directories(ArgueWithCpp
