@@ -99,7 +99,7 @@ public:
         : children(std::move(children_)), is_ordered(is_ordered_) {}
     Object_Block() = default;
     void print(std::ostream& stream) override {
-        stream << "ScopeBlock" << (is_ordered ? " ordered" : "unordered") << "\n";
+        stream << "ScopeBlock" << (is_ordered ? " ordered" : " unordered") << "\n";
         for (auto& child : children) {
             stream << "";
             child->print(stream);

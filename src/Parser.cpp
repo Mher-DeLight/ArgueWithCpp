@@ -9,7 +9,7 @@ void Parser::load_tokens(std::vector<Token> tkns) {
 }
 void Parser::parse() {
     cursor = 0;
-    entry_point = parseScope(false);
+    entry_point = parseArgfile();
 }
 std::unique_ptr<Object_Block> Parser::parseScope(bool require_brackets) {
     std::unique_ptr<Object_Block> scope = std::make_unique<Object_Block>();
@@ -39,6 +39,31 @@ std::unique_ptr<Object_Block> Parser::parseScope(bool require_brackets) {
 }
 
 // == PARSE FUNCTIONS ==
+std::unique_ptr<Object_Block> Parser::parseArgfile() {
+    eat(TokenType::KeywordArgfile, "expected 'argfile' at the beginning of the file");
+    bool is_ordered = true;
+    while (!check(TokenType::LBrace) && !check(TokenType::Semicolon)) {
+        if (check(TokenType::KeywordRequired)) {
+        } else if (check(TokenType::KeywordNotRequired)) {
+            panic("invalid attribute 'not required' for 'argfile'");
+        } else if (check(TokenType::KeywordOrdered)) {
+            is_ordered = true;
+        } else if (check(TokenType::KeywordUnordered)) {
+            is_ordered = false;
+        } else {
+            panic("Invalid attribute \"" + peek().lexeme + "\" for 'argfile'");
+        }
+
+        advance();
+    }
+    std::unique_ptr<Object_Block> scope = nullptr;
+    if (check(TokenType::LBrace)) {
+        scope = parseScope(true);
+        scope->is_ordered = is_ordered;
+    }
+    eat(TokenType::Semicolon, "expected semicolon after 'argfile'");
+    return std::move(scope);
+}
 std::unique_ptr<Object> Parser::parseStatement() {
     if (check(TokenType::ObjwordFlag))
         return parseFlag();
@@ -60,7 +85,6 @@ std::unique_ptr<Object_Flag> Parser::parseFlag() {
     bool is_ordered = true;
 
     while (!check(TokenType::LBrace) && !check(TokenType::Semicolon)) {
-
         if (check(TokenType::KeywordRequired)) {
             is_required = true;
         } else if (check(TokenType::KeywordNotRequired)) {

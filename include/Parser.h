@@ -25,6 +25,7 @@ private:
     void parserPanic(const std::string& msg, const SourceLocation& location = SourceLocation());
 
     std::unique_ptr<Object_Block> parseScope(bool require_brackets);
+    std::unique_ptr<Object_Block> parseArgfile();
     std::unique_ptr<Object> parseStatement();
     std::unique_ptr<Object_Flag> parseFlag();
 
