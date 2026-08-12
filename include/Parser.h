@@ -7,11 +7,7 @@
 
 class Parser {
 private:
-    std::map<std::string, std::string> vars_args;
-    std::map<std::string, bool> vars_flags;
-
     std::vector<Token> tokens;
-    std::unique_ptr<Object_Block> entry_point = std::make_unique<Object_Block>();
 
     int cursor = 0;
 
@@ -30,6 +26,7 @@ private:
     std::unique_ptr<Object_Flag> parseFlag();
 
 public:
+    std::unique_ptr<Object_Block> entry_point = std::make_unique<Object_Block>();
     void load_tokens(std::vector<Token> tokens_);
     void parse();
     void print_tree();
