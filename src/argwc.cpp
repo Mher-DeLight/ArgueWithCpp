@@ -88,7 +88,7 @@ void argwc::read_arguments() {
         }
     }
 }
-bool argwc::get_flag_value(const std::string& varname) {
+bool argwc::flag_enabled(const std::string& varname) {
     if (!vars_flags.contains(varname)) {
         panic("Cannot get the value of flag \"" + varname + "\" as it does not exist");
     }

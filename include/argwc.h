@@ -23,5 +23,5 @@ public:
     argwc(int argc_, char** argv_);
 
     void print_arguments();
-    bool get_flag_value(const std::string& varname);
+    bool flag_enabled(const std::string& varname);
 };
