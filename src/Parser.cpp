@@ -65,6 +65,8 @@ std::unique_ptr<Object_Flag> Parser::parseFlag() {
             is_required = true;
         } else if (check(TokenType::KeywordNotRequired)) {
             is_required = false;
+        } else if (check(TokenType::KeywordOrdered)) {
+            is_ordered = true;
         } else if (check(TokenType::KeywordUnordered)) {
             is_ordered = false;
         } else {
