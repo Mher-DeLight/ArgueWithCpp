@@ -11,6 +11,16 @@ enum class TokenType {
     VariableIdentifier,
     StringLiteral,
 
+    KeywordArgfile,
+    KeywordRequired,
+    KeywordNotRequired,
+    KeywordOrdered,
+    KeywordUnordered,
+
+    ObjwordArg,
+    ObjwordFlag,
+    ObjwordBuzzword,
+
     Plus,
     Minus,
     Star,
@@ -43,6 +53,17 @@ public:
 };
 const std::unordered_map<std::string, TokenType> word_table{
     {{"__END_OF_FILE__", TokenType::EndOfFile},
+
+     {"argfile", TokenType::KeywordArgfile},
+
+     {"arg", TokenType::ObjwordArg},
+     {"flag", TokenType::ObjwordFlag},
+     {"buzzword", TokenType::ObjwordBuzzword},
+
+     {"required", TokenType::KeywordRequired},
+     {"not_required", TokenType::KeywordNotRequired},
+     {"ordered", TokenType::KeywordOrdered},
+     {"unordered", TokenType::KeywordUnordered},
 
      {"+", TokenType::Plus},
      {"-", TokenType::Minus},

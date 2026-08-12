@@ -1,4 +1,6 @@
 #include "../include/argwc.h"
+#include "../include/Tokenizer.h"
+#include <iostream>
 
 argwc::argwc() {
     std::fstream grammer_file(config_file_path);
@@ -9,7 +11,11 @@ argwc::argwc() {
     std::stringstream buffer;
     buffer << grammer_file.rdbuf();
     config_file = buffer.str();
-    parse_config_file();
+    read_config();
 };
 
-void argwc::parse_config_file() {}
+void argwc::read_config() {
+    Tokenizer tkn;
+    tkn.tokenize(config_file);
+    tkn.pretty_print(std::cout);
+}

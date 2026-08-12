@@ -1,7 +1,6 @@
-#include <Tokenizer.h>
+#include <argwc.h>
 #include <iostream>
 
 int main() {
-    Tokenizer h;
-    printf("Hello, world!\n");
+    argwc mngr;
 }

@@ -47,14 +47,11 @@ bool Tokenizer::eof() {
 bool Tokenizer::is_identifier(const std::string& str) {
     return !word_table.contains(str);
 }
-TokenType Tokenizer::get_word_type(const std::string& str, bool allow_identifiers) {
+TokenType Tokenizer::get_word_type(const std::string& str) {
     if (word_table.contains(str)) {
         return word_table.at(str);
     } else {
-        if (allow_identifiers)
-            return TokenType::VariableIdentifier;
-        else
-            return TokenType::None;
+        TokenType::None;
     }
     return TokenType::None;
 }
@@ -81,9 +78,9 @@ void Tokenizer::tokenize(const std::string& c) {
     column = 1;
 
     while (cursor < code.size()) {
-        if (!is_valid_position(cursor))
+        if (!is_valid_position(cursor)) {
             break;
-
+        }
         if (current() == '\n') {
             next;
         }
@@ -98,7 +95,19 @@ void Tokenizer::tokenize(const std::string& c) {
         }
 
         SourceLocation location(row, column);
-        if (std::isalpha(current()) || current() == '_') {
+        if (current() == '$') {
+            advance();
+            std::string str;
+
+            while (!eof() && (std::isalnum(ucharcast(current())) || current() == '_')) {
+                assert_validity(cursor);
+                str += current();
+                advance();
+            }
+
+            token(TokenType::VariableIdentifier, str, location);
+            continue;
+        } else if (std::isalpha(current()) || current() == '_') {
             std::string str;
 
             while (!eof() && (std::isalnum(ucharcast(current())) || current() == '_')) {
@@ -133,7 +142,7 @@ void Tokenizer::tokenize(const std::string& c) {
             if (!word_table.contains(str))
                 panic("invalid character string \"" + str + "\"");
 
-            token(get_word_type(str, false), str, location);
+            token(get_word_type(str), str, location);
             continue;
         } else if (current() == '\"') {
             std::string str;

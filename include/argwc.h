@@ -10,7 +10,7 @@ private:
     std::string config_file = "";
     std::vector<std::unique_ptr<Object>> objects;
 
-    void parse_config_file();
+    void read_config();
 
 public:
     argwc();
