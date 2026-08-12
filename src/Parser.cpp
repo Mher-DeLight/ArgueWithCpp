@@ -18,8 +18,15 @@ std::unique_ptr<Object_Block> Parser::parseScope(bool require_brackets) {
         eat(TokenType::LBrace, "expected '{' on scope entry");
 
     while (!isEnd()) {
+        if (check(TokenType::Semicolon)) {
+            advance();
+            continue;
+        }
         auto stmt = parseStatement();
-        if (stmt != nullptr) {
+        if (stmt == nullptr) {
+            panic("invalid statement at " + std::to_string(peek().location.row) + ":" +
+                  std::to_string(peek().location.column));
+        } else {
             scope->children.push_back(std::move(stmt));
         }
 
@@ -33,8 +40,51 @@ std::unique_ptr<Object_Block> Parser::parseScope(bool require_brackets) {
 
 // == PARSE FUNCTIONS ==
 std::unique_ptr<Object> Parser::parseStatement() {
-    if (match(TokenType::Semicolon))
+    if (check(TokenType::ObjwordFlag))
+        return parseFlag();
+    else
         return nullptr;
+}
+std::unique_ptr<Object_Flag> Parser::parseFlag() {
+    eat(TokenType::ObjwordFlag, "expected objword 'flag' for flag declaration");
+
+    std::string variable_name =
+        eat(TokenType::VariableIdentifier, "expected variable identifier after 'flag' keyword")
+            .lexeme;
+
+    std::string flag_text =
+        eat(TokenType::StringLiteral, "expected flag text after variable name in 'flag' statement")
+            .lexeme;
+
+    bool is_required = false;
+    bool is_ordered = true;
+
+    while (!check(TokenType::LBrace) && !check(TokenType::Semicolon)) {
+
+        if (check(TokenType::KeywordRequired)) {
+            is_required = true;
+        } else if (check(TokenType::KeywordNotRequired)) {
+            is_required = false;
+        } else if (check(TokenType::KeywordUnordered)) {
+            is_ordered = false;
+        } else {
+            parserPanic("unexpected token '" + peek().lexeme + "' in flag declaration",
+                        peek().location);
+        }
+
+        advance();
+    }
+
+    std::unique_ptr<Object_Block> block = nullptr;
+
+    if (check(TokenType::LBrace)) {
+        block = parseScope(true);
+        block->is_ordered = is_ordered;
+    }
+
+    eat(TokenType::Semicolon, "expected semicolon after flag statement");
+
+    return std::make_unique<Object_Flag>(variable_name, flag_text, is_required, std::move(block));
 }
 
 // == HELPERS ==

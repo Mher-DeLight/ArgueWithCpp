@@ -23,4 +23,5 @@ void argwc::read_config() {
     Parser parser;
     parser.load_tokens(tkn.get_tokens());
     parser.parse();
+    parser.print_tree();
 }

@@ -26,6 +26,7 @@ private:
 
     std::unique_ptr<Object_Block> parseScope(bool require_brackets);
     std::unique_ptr<Object> parseStatement();
+    std::unique_ptr<Object_Flag> parseFlag();
 
 public:
     void load_tokens(std::vector<Token> tokens_);

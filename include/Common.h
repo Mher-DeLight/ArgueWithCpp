@@ -93,14 +93,35 @@ public:
 class Object_Block : public Object {
 public:
     std::vector<std::unique_ptr<Object>> children;
+    bool is_ordered = true;
 
-    Object_Block(std::vector<std::unique_ptr<Object>> children_) : children(std::move(children_)) {}
+    Object_Block(std::vector<std::unique_ptr<Object>> children_, bool is_ordered_ = true)
+        : children(std::move(children_)), is_ordered(is_ordered_) {}
     Object_Block() = default;
     void print(std::ostream& stream) override {
-        stream << "ScopeBlock";
+        stream << "ScopeBlock\n";
         for (auto& child : children) {
-            stream << "    ";
+            stream << "";
             child->print(stream);
         }
+        stream << "EndScope\n";
+    }
+};
+class Object_Flag : public Object {
+public:
+    std::string name;      // $varname
+    std::string flag_text; // --flag
+    bool required;
+    std::unique_ptr<Object_Block> block;
+
+    Object_Flag(const std::string& name_, const std::string& flag_text_, bool required_ = false,
+                std::unique_ptr<Object_Block> block_ = nullptr)
+        : name(name_), flag_text(flag_text_), required(required_), block(std::move(block_)) {}
+
+    void print(std::ostream& stream) override {
+        stream << "Flag: $" << name << " \"" << flag_text << "\"" << (required ? " *" : "") << '\n';
+
+        if (block)
+            block->print(stream);
     }
 };

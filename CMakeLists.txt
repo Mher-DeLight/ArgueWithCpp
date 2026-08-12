@@ -6,6 +6,7 @@ option(BUILD_TESTS "Build tests" OFF)
 add_library(ArgueWithCpp
     src/argwc.cpp
     src/Tokenizer.cpp
+    src/Parser.cpp
 )
 
 target_include_directories(ArgueWithCpp
