@@ -148,3 +148,13 @@ std::string argwc::get_arg(const std::string& varname) {
     }
     return vars_args[varname];
 }
+
+bool argwc::flag_exists(const std::string& flagname) {
+    return vars_flags.contains(flagname);
+}
+bool argwc::arg_exists(const std::string& argname) {
+    return vars_args.contains(argname);
+}
+bool argwc::obj_exists(const std::string& objname) {
+    return vars_flags.contains(objname) || vars_args.contains(objname);
+}

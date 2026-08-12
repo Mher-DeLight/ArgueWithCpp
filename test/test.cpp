@@ -5,5 +5,8 @@ int main(int argc, char** argv) {
     argwc mngr(argc, argv);
 
     mngr.print_arguments();
-    std::cout << mngr.get_arg("mypath") << std::endl;
+    if (mngr.arg_exists("path"))
+        std::cout << mngr.get_arg("path") << std::endl;
+    else
+        std::cout << "no path provided" << std::endl;
 }

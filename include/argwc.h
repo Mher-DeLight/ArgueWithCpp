@@ -25,4 +25,8 @@ public:
     void print_arguments();
     bool flag_enabled(const std::string& varname);
     std::string get_arg(const std::string& varname);
+
+    bool flag_exists(const std::string& flagname);
+    bool arg_exists(const std::string& argname);
+    bool obj_exists(const std::string& objname);
 };
