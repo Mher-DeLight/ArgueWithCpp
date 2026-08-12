@@ -15,6 +15,16 @@ argwc::argwc(int argc_, char** argv_) : argc(argc_), argv(argv_) {
     read_config();
     read_arguments();
 };
+void argwc::print_arguments() {
+    std::cout << "== PROGRAM ARGUMENTS ==" << std::endl;
+    for (int i = 0; i < argc; i++) {
+        std::cout << std::to_string(i) << ") " << argv[i];
+        if (i == 0) {
+            std::cout << " (by default)";
+        }
+        std::cout << std::endl;
+    }
+}
 
 void argwc::read_config() {
     Tokenizer tkn;
