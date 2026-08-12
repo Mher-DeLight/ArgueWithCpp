@@ -92,3 +92,6 @@ void Parser::parserPanic(const std::string& msg, const SourceLocation& src) {
     panic("[PARSER PANIC] " + msg + " [AT " + std::to_string(src.row) + ":" +
           std::to_string(src.column) + "]");
 }
+void Parser::print_tree() {
+    entry_point->print(std::cout);
+}
