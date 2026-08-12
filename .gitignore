@@ -46,6 +46,7 @@ CTestTestfile.cmake
 build/
 build-artifacts/
 out/
+builds/
 
 # IDE specific build directories (e.g., CLion, QtCreator)
 .cmake/
