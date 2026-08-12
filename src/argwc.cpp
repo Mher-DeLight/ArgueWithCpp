@@ -72,7 +72,30 @@ void argwc::read_arguments() {
     }
 
     // now we determine flag values and enforce requirements (only for active flags)
-    for (auto* obj : active_objs) {
+    // collect all known flag texts so we can separate positional args
+    std::unordered_set<std::string> all_flag_texts;
+    for (auto& obj : objects) {
+        if (auto flg = dynamic_cast<Object_Flag*>(obj.get())) {
+            all_flag_texts.insert(flg->flag_text);
+        }
+    }
+
+    // build positional args list (preserve order, skip known flag texts)
+    std::vector<std::string> positional_args;
+    for (int i = 1; i < argc; ++i) {
+        std::string s(argv[i]);
+        if (!all_flag_texts.contains(s))
+            positional_args.push_back(s);
+    }
+
+    // assign positional args to active Object_Arg objects in encounter order
+    size_t pos_idx = 0;
+    // track which args' blocks we've expanded to avoid duplication
+    std::unordered_set<std::string> activated_args;
+
+    for (size_t i = 0; i < active_objs.size(); ++i) {
+        auto* obj = active_objs[i];
+
         if (auto flg = dynamic_cast<Object_Flag*>(obj)) {
             if (provided_args.contains(flg->flag_text)) {
                 vars_flags[flg->name] = true;
@@ -86,6 +109,34 @@ void argwc::read_arguments() {
                 }
             }
         }
+
+        if (auto arg = dynamic_cast<Object_Arg*>(obj)) {
+            // if we have a remaining positional argument, assign it
+            if (pos_idx < positional_args.size()) {
+                vars_args[arg->name] = positional_args[pos_idx++];
+
+                // if this arg has a block, expand its children into active_objs
+                if (arg->block && !activated_args.contains(arg->name)) {
+                    for (auto& child : arg->block->children) {
+                        active_objs.push_back(child.get());
+                    }
+                    activated_args.insert(arg->name);
+                }
+            }
+        }
+    }
+
+    // enforce requirements for args and flags (flags already set above)
+    for (auto* obj : active_objs) {
+        if (auto arg = dynamic_cast<Object_Arg*>(obj)) {
+            if (!vars_args.contains(arg->name) && arg->required) {
+                panic("Required argument \"" + arg->name + "\" was not passed");
+                continue;
+            } else if (!vars_args.contains(arg->name) && !arg->required) {
+                vars_args[arg->name] = "";
+                continue;
+            }
+        }
     }
 }
 bool argwc::flag_enabled(const std::string& varname) {
@@ -93,4 +144,10 @@ bool argwc::flag_enabled(const std::string& varname) {
         panic("Cannot get the value of flag \"" + varname + "\" as it does not exist");
     }
     return vars_flags[varname];
+}
+std::string argwc::get_arg(const std::string& varname) {
+    if (!vars_args.contains(varname)) {
+        panic("Cannot get the value of argument \"" + varname + "\" as it does not exist");
+    }
+    return vars_args[varname];
 }

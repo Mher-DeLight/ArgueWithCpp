@@ -26,6 +26,7 @@ private:
     std::unique_ptr<Object> parseStatement();
     std::unique_ptr<Object_Flag> parseFlag();
     std::unique_ptr<Object_Flag> parseBuzzword();
+    std::unique_ptr<Object_Arg> parseArg();
 
 public:
     std::unique_ptr<Object_Block> entry_point = std::make_unique<Object_Block>();

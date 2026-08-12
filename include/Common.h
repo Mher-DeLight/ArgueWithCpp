@@ -128,16 +128,15 @@ public:
 class Object_Arg : public Object {
 public:
     std::string name;
-    std::string value;
     bool required;
     std::unique_ptr<Object_Block> block;
 
-    Object_Arg(const std::string& name_, const std::string& value_, bool required_ = false,
+    Object_Arg(const std::string& name_, bool required_ = false,
                std::unique_ptr<Object_Block> block_ = nullptr)
-        : name(name_), value(value_), required(required_), block(std::move(block_)) {}
+        : name(name_), required(required_), block(std::move(block_)) {}
 
     void print(std::ostream& stream) override {
-        stream << "Argument: $" << name << " \"" << value << "\"" << (required ? " *" : "") << '\n';
+        stream << "Argument: $" << name << (required ? " *" : "") << '\n';
 
         if (block)
             block->print(stream);

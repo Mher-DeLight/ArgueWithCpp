@@ -24,4 +24,5 @@ public:
 
     void print_arguments();
     bool flag_enabled(const std::string& varname);
+    std::string get_arg(const std::string& varname);
 };
