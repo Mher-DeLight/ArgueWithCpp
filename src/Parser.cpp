@@ -22,6 +22,9 @@ std::unique_ptr<Object_Block> Parser::parseScope(bool require_brackets) {
             advance();
             continue;
         }
+        if (require_brackets && match(TokenType::RBrace)) {
+            break;
+        }
         auto stmt = parseStatement();
         if (stmt == nullptr) {
             panic("invalid statement at " + std::to_string(peek().location.row) + ":" +
