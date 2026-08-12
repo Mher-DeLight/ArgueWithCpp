@@ -11,7 +11,7 @@ add_library(ArgueWithCpp
 
 target_include_directories(ArgueWithCpp
     PUBLIC
-        ${PROJECT_SOURCE_DIR}/include
+        ${PROJECT_SOURCE_DIR}/include/ArgueWithCpp
 )
 
 target_compile_features(ArgueWithCpp

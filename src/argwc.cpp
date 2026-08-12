@@ -1,6 +1,6 @@
-#include "../include/argwc.h"
-#include "../include/Parser.h"
-#include "../include/Tokenizer.h"
+#include "../include/ArgueWithCpp/argwc.h"
+#include "../include/ArgueWithCpp/Parser.h"
+#include "../include/ArgueWithCpp/Tokenizer.h"
 #include <iostream>
 #include <unordered_set>
 

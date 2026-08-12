@@ -1,7 +1,7 @@
-#include "../include/Parser.h"
-#include "../include/Common.h"
-#include "../include/ErrorHandler.h"
-#include "Tokenizer.h"
+#include "../include/ArgueWithCpp/Parser.h"
+#include "../include/ArgueWithCpp/Common.h"
+#include "../include/ArgueWithCpp/ErrorHandler.h"
+#include "../include/ArgueWithCpp/Tokenizer.h"
 #include <iostream>
 
 void Parser::load_tokens(std::vector<Token> tkns) {
