@@ -53,7 +53,7 @@ void argwc::read_arguments() {
         active_objs.push_back(obj.get());
     }
 
-    std::unordered_set<std::string> activated_flags; // flag names whose blocksw ere expanded
+    std::unordered_set<std::string> activated_flags;
     bool changed = true;
     while (changed) {
         changed = false;
@@ -111,11 +111,9 @@ void argwc::read_arguments() {
         }
 
         if (auto arg = dynamic_cast<Object_Arg*>(obj)) {
-            // if we have a remaining positional argument, assign it
             if (pos_idx < positional_args.size()) {
                 vars_args[arg->name] = positional_args[pos_idx++];
 
-                // if this arg has a block, expand its children into active_objs
                 if (arg->block && !activated_args.contains(arg->name)) {
                     for (auto& child : arg->block->children) {
                         active_objs.push_back(child.get());
@@ -126,7 +124,6 @@ void argwc::read_arguments() {
         }
     }
 
-    // enforce requirements for args and flags (flags already set above)
     for (auto* obj : active_objs) {
         if (auto arg = dynamic_cast<Object_Arg*>(obj)) {
             if (!vars_args.contains(arg->name) && arg->required) {
