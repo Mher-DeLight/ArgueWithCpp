@@ -3,7 +3,7 @@
 #include "../include/Tokenizer.h"
 #include <iostream>
 
-argwc::argwc() {
+argwc::argwc(int argc_, char** argv_) {
     std::fstream grammer_file(config_file_path);
     if (!grammer_file) {
         panic("Could not find configuration file \"" + config_file_path + "\"");

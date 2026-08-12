@@ -11,7 +11,9 @@ private:
     std::vector<std::unique_ptr<Object>> objects;
 
     void read_config();
+    int argc;
+    char** argv;
 
 public:
-    argwc();
+    argwc(int argc_, char** argv_);
 };
