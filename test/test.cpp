@@ -4,7 +4,6 @@
 int main(int argc, char** argv) {
     argwc mngr(argc, argv);
 
-    mngr.print_arguments();
     if (mngr.arg_exists("path"))
         std::cout << mngr.get_arg("path") << std::endl;
     else

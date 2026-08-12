@@ -30,12 +30,10 @@ void argwc::print_arguments() {
 void argwc::read_config() {
     Tokenizer tkn;
     tkn.tokenize(config_file);
-    tkn.pretty_print(std::cout);
 
     Parser parser;
     parser.load_tokens(tkn.get_tokens());
     parser.parse();
-    parser.print_tree();
 
     objects = std::move(parser.entry_point->children);
 }
