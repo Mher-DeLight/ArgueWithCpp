@@ -14,10 +14,11 @@ argfile {
 And to use in C++:
 ```cpp
 #include <argwc.h>
+#include "argfile.h"
 #include <iostream>
 
 int main(int argc, char** argv) {
-    argwc mngr(argc, argv);
+    argwc mngr(argc, argv, argfile().text);
 
     if (mngr.arg_exists("path"))
         std::cout << mngr.get_arg("path") << std::endl;
@@ -46,9 +47,9 @@ int main(int argc, char** argv) {
 ```
 #### Functions
 ```cpp
-argwc(int argc, char** argv)
+argwc(int argc, char** argv, const std::string& code)
 ```
-The class constructor. Takes the `argc` and `argv` parameters passed to the `main()` function.
+The class constructor. Takes the `argc` and `argv` parameters passed to the `main()` function. Also takes `code` arguement which should be included from the argfile. See [Argue With Cpp Compiler](#arguewithcpp-compiler-argwc-comp).
 ```cpp
 bool flag_enabled(const std::string& flagname)
 ```
@@ -84,3 +85,5 @@ argfile {
 };
 ```
 The brackets after a statement but before its semicolon represents a scope where the statements inside will only be invoked if the outer statement is also passed. Statements marked with `required` will make the program throw if not passed.
+### ArgueWithCpp Compiler (argwc-comp)
+The ArgueWithCpp compiler is a arwc-to-C++ transpiler to allow packacing the Grammar file directly with the executable. [Download it from here.](https://github.com/Mher-DeLight/ArgwcCompiler) Then put it in your `~/.bin`, `~/.local/bin`, or if you have root access, `/usr/local/bin`. Then write your ArgueWithCpp file and compile it with `argwc-comp /path/to/your/grammarfile.awc /path/to/your/src/directory/argfile.h`. Then include it from the C++ file and use it as [above](#example-snipper).
