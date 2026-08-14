@@ -10,7 +10,6 @@ private:
     std::map<std::string, std::string> vars_args;
     std::map<std::string, bool> vars_flags;
 
-    std::string config_file_path = "ArgGrammar.awc";
     std::string config_file = "";
     std::vector<std::unique_ptr<Object>> objects;
 
@@ -20,7 +19,7 @@ private:
     char** argv;
 
 public:
-    argwc(int argc_, char** argv_);
+    argwc(int argc_, char** argv_, const std::string& code);
 
     void print_arguments();
     bool flag_enabled(const std::string& varname);

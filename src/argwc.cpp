@@ -4,15 +4,7 @@
 #include <iostream>
 #include <unordered_set>
 
-argwc::argwc(int argc_, char** argv_) : argc(argc_), argv(argv_) {
-    std::fstream grammer_file(config_file_path);
-    if (!grammer_file) {
-        panic("Could not find configuration file \"" + config_file_path + "\"");
-    }
-
-    std::stringstream buffer;
-    buffer << grammer_file.rdbuf();
-    config_file = buffer.str();
+argwc::argwc(int argc_, char** argv_, const std::string& code) : argc(argc_), argv(argv_), config_file(code) {
     read_config();
     read_arguments();
 };
