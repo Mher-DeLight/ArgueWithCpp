@@ -39,9 +39,10 @@ Then the program can be ran via:
 In the C++ half, `argwc` is invoked like this:
 ```cpp
 #include <ArgueWithCpp/argwc.h>
+#include "argfile.h"
 
 int main(int argc, char** argv) {
-    argwc argmn(argc, argv);
+    argwc argmn(argc, argv, argfile().text);
    // use argwc here
 }
 ```

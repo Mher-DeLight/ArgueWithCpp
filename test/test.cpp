@@ -1,5 +1,5 @@
-#include <argwc.h>
 #include "argfile.h" // if this line errors for you, you probably didn't generate the argfile. see the README.
+#include <argwc.h>
 #include <iostream>
 
 int main(int argc, char** argv) {
