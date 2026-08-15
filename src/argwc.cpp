@@ -4,7 +4,8 @@
 #include <iostream>
 #include <unordered_set>
 
-argwc::argwc(int argc_, char** argv_, const std::string& code) : argc(argc_), argv(argv_), config_file(code) {
+argwc::argwc(int argc_, char** argv_, const std::string& code)
+    : argc(argc_), argv(argv_), config_file(code) {
     read_config();
     read_arguments();
 };
@@ -64,9 +65,13 @@ void argwc::read_arguments() {
     // now we determine flag values and enforce requirements (only for active flags)
     // collect all known flag texts so we can separate positional args
     std::unordered_set<std::string> all_flag_texts;
+    std::unordered_set<std::string> all_val_prefixes;
     for (auto& obj : objects) {
         if (auto flg = dynamic_cast<Object_Flag*>(obj.get())) {
             all_flag_texts.insert(flg->flag_text);
+        }
+        if (auto val = dynamic_cast<Object_Val*>(obj.get())) {
+            all_val_prefixes.insert(val->prefix_text);
         }
     }
 
@@ -74,7 +79,20 @@ void argwc::read_arguments() {
     std::vector<std::string> positional_args;
     for (int i = 1; i < argc; ++i) {
         std::string s(argv[i]);
-        if (!all_flag_texts.contains(s))
+        bool is_known = false;
+        if (all_flag_texts.contains(s))
+            is_known = true;
+        else {
+            for (auto& prefix : all_val_prefixes) {
+                std::string pfx = prefix + "=";
+                if (s.rfind(pfx, 0) == 0) {
+                    is_known = true;
+                    break;
+                }
+            }
+        }
+
+        if (!is_known)
             positional_args.push_back(s);
     }
 
@@ -82,6 +100,7 @@ void argwc::read_arguments() {
     size_t pos_idx = 0;
     // track which args' blocks we've expanded to avoid duplication
     std::unordered_set<std::string> activated_args;
+    std::unordered_set<std::string> activated_vals;
 
     for (size_t i = 0; i < active_objs.size(); ++i) {
         auto* obj = active_objs[i];
@@ -112,6 +131,23 @@ void argwc::read_arguments() {
                 }
             }
         }
+
+        if (auto val = dynamic_cast<Object_Val*>(obj)) {
+            std::string match_prefix = val->prefix_text + "=";
+            for (const auto& provided : provided_args) {
+                if (provided.rfind(match_prefix, 0) == 0) {
+                    vars_args[val->name] = provided.substr(match_prefix.size());
+
+                    if (val->block && !activated_vals.contains(val->name)) {
+                        for (auto& child : val->block->children) {
+                            active_objs.push_back(child.get());
+                        }
+                        activated_vals.insert(val->name);
+                    }
+                    break;
+                }
+            }
+        }
     }
 
     for (auto* obj : active_objs) {
@@ -121,6 +157,15 @@ void argwc::read_arguments() {
                 continue;
             } else if (!vars_args.contains(arg->name) && !arg->required) {
                 vars_args[arg->name] = "";
+                continue;
+            }
+        }
+        if (auto val = dynamic_cast<Object_Val*>(obj)) {
+            if (!vars_args.contains(val->name) && val->required) {
+                panic("Required value \"" + val->prefix_text + "\" was not passed");
+                continue;
+            } else if (!vars_args.contains(val->name) && !val->required) {
+                vars_args[val->name] = "";
                 continue;
             }
         }

@@ -21,6 +21,7 @@ enum class TokenType {
     ObjwordArg,
     ObjwordFlag,
     ObjwordBuzzword,
+    ObjwordVal,
 
     Plus,
     Minus,
@@ -59,6 +60,7 @@ const std::unordered_map<std::string, TokenType> word_table{
 
      {"arg", TokenType::ObjwordArg},
      {"flag", TokenType::ObjwordFlag},
+     {"val", TokenType::ObjwordVal},
      {"buzzword", TokenType::ObjwordBuzzword},
 
      {"required", TokenType::KeywordRequired},
@@ -137,6 +139,25 @@ public:
 
     void print(std::ostream& stream) override {
         stream << "Argument: $" << name << (required ? " *" : "") << '\n';
+
+        if (block)
+            block->print(stream);
+    }
+};
+class Object_Val : public Object {
+public:
+    std::string name;
+    std::string prefix_text;
+    bool required;
+    std::unique_ptr<Object_Block> block;
+
+    Object_Val(const std::string& name_, const std::string& flag_text_, bool required_ = false,
+               std::unique_ptr<Object_Block> block_ = nullptr)
+        : name(name_), prefix_text(flag_text_), required(required_), block(std::move(block_)) {}
+
+    void print(std::ostream& stream) override {
+        stream << "Value: $" << name << " \"" << prefix_text << "=\"" << (required ? " *" : "")
+               << '\n';
 
         if (block)
             block->print(stream);
