@@ -85,12 +85,13 @@ argfile {
     // grammar goes here
 };
 ```
-Every statement ends with a semicolon. As of now, there are three statements, `buzzword`, `flag`, and `arg` statements. `buzzword` statements are arguments consumed solely for aesthetics or structure. `flag` are statements that return `true` if present and `false` otherwise. And `arg` may contain an arbitrary string. Here's an example:
+Every statement ends with a semicolon. As of now, there are for statements, `buzzword`, `flag`, `arg`, and `val` statements. `buzzword` statements are arguments consumed solely for aesthetics or structure. `flag` are statements that return `true` if present and `false` otherwise. And `arg` may contain an arbitrary string. `val` statements are like args but are taken with the format "varname=value". Here's an example:
 ```
 argfile {
     buzzword "--greet" required {
         arg $name required;
     }
+    val $greetingType "--set-greeting-type"; // used like: --set-greeting-type=hello
     flag $beFriendly "--be-friendly";
 };
 ```
