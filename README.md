@@ -34,6 +34,15 @@ Then the program can be ran via:
 ```bash
 ./myprogram --dir sometextgoeshere --verbose
 ```
+## Todo
+- [ ] Add custom string formatting for `val` and `arg` (perhaps via regex?)
+- [ ] Make `ordered` actually work
+- [ ] Reimplement the parse args function (i can barely understand it)
+- [ ] Incorporate it with argwc-comp such that they don't have to be separate executables
+- [ ] Custom error messages assigned by the user
+- [ ] Syntax highlighter for VSCode
+- [ ] Macros?
+- [ ] Add an optional `xargs` attribute to `argfile` such that text from stdin is accepted as argument
 ## Documentation
 ### C++
 In the C++ half, `argwc` is invoked like this:
