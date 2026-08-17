@@ -35,6 +35,7 @@ Then the program can be ran via:
 ./myprogram --dir sometextgoeshere --verbose
 ```
 ## Todo
+- [x] Make it deserialize information from `argwc-comp` instead of parsing at runtime
 - [ ] Add custom string formatting for `val` and `arg` (perhaps via regex?)
 - [ ] Make `ordered` actually work
 - [ ] Reimplement the parse args function (i can barely understand it)
