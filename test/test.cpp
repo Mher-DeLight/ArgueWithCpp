@@ -5,5 +5,5 @@
 int main(int argc, char** argv) {
     argwc mngr(argc, argv, argfile::data);
 
-    std::cout << (mngr.flag_enabled("myflag") ? "true" : "false") << std::endl;
+    std::cout << mngr.get_arg("dir") << std::endl;
 }

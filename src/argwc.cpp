@@ -103,20 +103,6 @@ std::unique_ptr<Object> argwc::readObject() {
     return std::move(node);
 }
 void argwc::read_config() {
-    /*
-    ==================================== FORMAT ===================================
-    | Object type (0->invalid, 1->block, 2->arg, 3->flag, 4->val)         1 byte  |
-    | Info (hgfedcba, a->is required, b->is ordered)                      1 byte  |
-    |                                                                             |
-    | Name size                                                           1 byte  |
-    | Name                                                      (name size) bytes |
-    |                                                                             |
-    | Varname size                                                        1 byte  |
-    | Varname                                                (varname size) bytes |
-    |                                                                             |
-    | Child count (sucessors)                                             1 byte  |
-    ===============================================================================
-    */
     while (cursor < file_data.size()) {
         entry_point->children.push_back(readObject());
     }
