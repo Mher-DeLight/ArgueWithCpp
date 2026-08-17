@@ -3,14 +3,16 @@
 #include "ErrorHandler.h"
 #include <fstream>
 #include <map>
+#include <span>
 #include <sstream>
+#include <vector>
 
 class argwc {
 private:
     std::map<std::string, std::string> vars_args;
     std::map<std::string, bool> vars_flags;
 
-    std::string config_file = "";
+    std::vector<unsigned char> file_data;
     std::vector<std::unique_ptr<Object>> objects;
 
     void read_config();
@@ -19,7 +21,7 @@ private:
     char** argv;
 
 public:
-    argwc(int argc_, char** argv_, const std::string& code);
+    argwc(int argc_, char** argv_, const std::span<uint8_t> data);
 
     void print_arguments();
     bool flag_enabled(const std::string& varname);

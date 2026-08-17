@@ -2,8 +2,8 @@
 #include <iostream>
 #include <unordered_set>
 
-argwc::argwc(int argc_, char** argv_, const std::string& code)
-    : argc(argc_), argv(argv_), config_file(code) {
+argwc::argwc(int argc_, char** argv_, const std::span<uint8_t> data)
+    : argc(argc_), argv(argv_), file_data(std::vector<uint8_t>(data.begin(), data.end())) {
     read_config();
     read_arguments();
 };
@@ -18,7 +18,22 @@ void argwc::print_arguments() {
     }
 }
 
-void argwc::read_config() {}
+void argwc::read_config() {
+    /*
+    ==================================== FORMAT ===================================
+    | Object type (0->invalid, 1->block, 2->arg, 3->flag, 4->val)         1 byte  |
+    | Info (hgfedcba, a->is required, b->is ordered)                      1 byte  |
+    |                                                                             |
+    | Name size                                                           1 byte  |
+    | Name                                                      (name size) bytes |
+    |                                                                             |
+    | Varname size                                                        1 byte  |
+    | Varname                                                (varname size) bytes |
+    |                                                                             |
+    | Child count (sucessors)                                             1 byte  |
+    ===============================================================================
+    */
+}
 void argwc::read_arguments() {
     std::unordered_set<std::string> provided_args;
     for (int i = 1; i < argc; ++i) { // 1 is the program name, skip it

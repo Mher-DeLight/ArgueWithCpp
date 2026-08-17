@@ -3,7 +3,7 @@
 #include <iostream>
 
 int main(int argc, char** argv) {
-    argwc mngr(argc, argv, argfile().text);
+    argwc mngr(argc, argv, argfile::data);
 
     if (mngr.arg_exists("direc"))
         std::cout << mngr.get_arg("direc") << std::endl;
