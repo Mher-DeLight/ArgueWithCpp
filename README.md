@@ -34,6 +34,15 @@ Then the program can be ran via:
 ```bash
 ./myprogram --dir sometextgoeshere --verbose
 ```
+## Todo
+- [ ] Add custom string formatting for `val` and `arg` (perhaps via regex?)
+- [ ] Make `ordered` actually work
+- [ ] Reimplement the parse args function (i can barely understand it)
+- [ ] Incorporate it with argwc-comp such that they don't have to be separate executables
+- [ ] Custom error messages assigned by the user
+- [ ] Syntax highlighter for VSCode
+- [ ] Macros?
+- [ ] Add an optional `xargs` attribute to `argfile` such that text from stdin is accepted as argument
 ## Documentation
 ### C++
 In the C++ half, `argwc` is invoked like this:
@@ -76,12 +85,13 @@ argfile {
     // grammar goes here
 };
 ```
-Every statement ends with a semicolon. As of now, there are three statements, `buzzword`, `flag`, and `arg` statements. `buzzword` statements are arguments consumed solely for aesthetics or structure. `flag` are statements that return `true` if present and `false` otherwise. And `arg` may contain an arbitrary string. Here's an example:
+Every statement ends with a semicolon. As of now, there are for statements, `buzzword`, `flag`, `arg`, and `val` statements. `buzzword` statements are arguments consumed solely for aesthetics or structure. `flag` are statements that return `true` if present and `false` otherwise. And `arg` may contain an arbitrary string. `val` statements are like args but are taken with the format "varname=value". Here's an example:
 ```
 argfile {
     buzzword "--greet" required {
         arg $name required;
     }
+    val $greetingType "--set-greeting-type"; // used like: --set-greeting-type=hello
     flag $beFriendly "--be-friendly";
 };
 ```
