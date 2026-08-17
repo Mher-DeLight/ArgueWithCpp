@@ -1,6 +1,4 @@
 #include "../include/ArgueWithCpp/argwc.h"
-#include "../include/ArgueWithCpp/Parser.h"
-#include "../include/ArgueWithCpp/Tokenizer.h"
 #include <iostream>
 #include <unordered_set>
 
@@ -20,16 +18,7 @@ void argwc::print_arguments() {
     }
 }
 
-void argwc::read_config() {
-    Tokenizer tkn;
-    tkn.tokenize(config_file);
-
-    Parser parser;
-    parser.load_tokens(tkn.get_tokens());
-    parser.parse();
-
-    objects = std::move(parser.entry_point->children);
-}
+void argwc::read_config() {}
 void argwc::read_arguments() {
     std::unordered_set<std::string> provided_args;
     for (int i = 1; i < argc; ++i) { // 1 is the program name, skip it
