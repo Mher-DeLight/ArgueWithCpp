@@ -4,6 +4,7 @@
 
 argwc::argwc(int argc_, char** argv_, const std::span<uint8_t> data)
     : argc(argc_), argv(argv_), file_data(std::vector<uint8_t>(data.begin(), data.end())) {
+    entry_point = std::make_unique<Object_Block>();
     read_config();
     read_arguments();
 };
@@ -18,6 +19,89 @@ void argwc::print_arguments() {
     }
 }
 
+std::unique_ptr<Object> argwc::readObject() {
+    /*
+    ==================================== FORMAT ===================================
+    | Object type (0->invalid, 1->block, 2->arg, 3->flag, 4->val)         1 byte  |
+    | Info (hgfedcba, a->is required, b->is ordered)                      1 byte  |
+    |                                                                             |
+    | Name size                                                           1 byte  |
+    | Name                                                      (name size) bytes |
+    |                                                                             |
+    | Varname size                                                        1 byte  |
+    | Varname                                                (varname size) bytes |
+    |                                                                             |
+    | Child count (sucessors)                                             1 byte  |
+    ===============================================================================
+    */
+
+    using byte = uint8_t;
+
+    // READ TYPE
+    byte type = file_data[cursor];
+    cursor++;
+
+    // READ INFO
+    bool is_required = (file_data[cursor] & (1 << 0)) == 1;
+    bool is_ordered = (file_data[cursor] & (1 << 1)) == 1;
+    cursor++;
+
+    // READ NAME
+    byte namesize = file_data[cursor];
+    cursor++;
+    std::string name;
+    for (int i = 0; i < namesize; i++) {
+        name += static_cast<char>(file_data[cursor]);
+        cursor++;
+    }
+
+    // READ VARNAME
+    byte varnamesize = file_data[cursor];
+    cursor++;
+    std::string varname;
+    for (int i = 0; i < varnamesize; i++) {
+        varname += static_cast<char>(file_data[cursor]);
+        cursor++;
+    }
+
+    // READ CHILDREN
+    byte childcount = file_data[cursor];
+    cursor++;
+    std::unique_ptr<Object_Block> block;
+    if (childcount > 0) {
+        block = std::make_unique<Object_Block>(std::vector<std::unique_ptr<Object>>{});
+        for (int i = 0; i < childcount; i++) {
+            block->children.push_back(readObject());
+        }
+    }
+    if (block)
+        block->is_ordered = is_ordered;
+
+    // CONSTRUCT AND RETURN NODE
+    std::unique_ptr<Object> node;
+    switch (type) {
+        case uint8_t(0):
+            throw std::runtime_error("invalid object type 0 during reading at position " +
+                                     std::to_string(cursor));
+            break;
+        case uint8_t(1):
+            node = std::move(block);
+            break;
+        case uint8_t(2):
+            node = std::make_unique<Object_Arg>(varname, is_required, std::move(block));
+            break;
+        case uint8_t(3):
+            node = std::make_unique<Object_Flag>(varname, name, is_required, std::move(block));
+            break;
+        case uint8_t(4):
+            node = std::make_unique<Object_Val>(varname, name, is_required, std::move(block));
+            break;
+        default:
+            break;
+    }
+
+    return std::move(node);
+}
 void argwc::read_config() {
     /*
     ==================================== FORMAT ===================================
@@ -33,6 +117,9 @@ void argwc::read_config() {
     | Child count (sucessors)                                             1 byte  |
     ===============================================================================
     */
+    while (cursor < file_data.size()) {
+        entry_point->children.push_back(readObject());
+    }
 }
 void argwc::read_arguments() {
     std::unordered_set<std::string> provided_args;
@@ -43,8 +130,8 @@ void argwc::read_arguments() {
     // we'll build active object list starting from top-level Objects, when a flag
     // with an if_passed block is present in rhe args, its block children become active too
     std::vector<Object*> active_objs;
-    active_objs.reserve(objects.size());
-    for (auto& obj : objects) {
+    active_objs.reserve(entry_point->children.size());
+    for (auto& obj : entry_point->children) {
         active_objs.push_back(obj.get());
     }
 
@@ -70,7 +157,7 @@ void argwc::read_arguments() {
     // collect all known flag texts so we can separate positional args
     std::unordered_set<std::string> all_flag_texts;
     std::unordered_set<std::string> all_val_prefixes;
-    for (auto& obj : objects) {
+    for (auto& obj : entry_point->children) {
         if (auto flg = dynamic_cast<Object_Flag*>(obj.get())) {
             all_flag_texts.insert(flg->flag_text);
         }

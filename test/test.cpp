@@ -5,8 +5,5 @@
 int main(int argc, char** argv) {
     argwc mngr(argc, argv, argfile::data);
 
-    if (mngr.arg_exists("direc"))
-        std::cout << mngr.get_arg("direc") << std::endl;
-    else
-        std::cout << "no path provided" << std::endl;
+    std::cout << (mngr.flag_enabled("myflag") ? "true" : "false") << std::endl;
 }

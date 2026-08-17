@@ -6,12 +6,10 @@ option(BUILD_TESTS "Build tests" OFF)
 add_library(ArgueWithCpp
     src/argwc.cpp
 )
-
 target_include_directories(ArgueWithCpp
     PUBLIC
         ${PROJECT_SOURCE_DIR}/include/ArgueWithCpp
 )
-
 target_compile_features(ArgueWithCpp
     PUBLIC
         cxx_std_20

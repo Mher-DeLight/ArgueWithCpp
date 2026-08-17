@@ -13,10 +13,13 @@ private:
     std::map<std::string, bool> vars_flags;
 
     std::vector<unsigned char> file_data;
-    std::vector<std::unique_ptr<Object>> objects;
+    std::unique_ptr<Object_Block> entry_point;
 
     void read_config();
     void read_arguments();
+    std::unique_ptr<Object> readObject();
+    int cursor = 0;
+
     int argc = 0;
     char** argv;
 
