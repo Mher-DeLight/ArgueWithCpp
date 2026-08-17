@@ -49,12 +49,16 @@ Then the program can be ran via:
 - [x] Make it deserialize information from `argwc-comp` instead of parsing at runtime
 - [ ] Add custom string formatting for `val` and `arg` (perhaps via regex?)
 - [ ] Make `ordered` actually work
-- [ ] Reimplement the parse args function (i can barely understand it)
 - [ ] Incorporate it with argwc-comp such that they don't have to be separate executables
 - [ ] Custom error messages assigned by the user
 - [ ] Syntax highlighter for VSCode
 - [ ] Macros?
 - [ ] Add an optional `xargs` attribute to `argfile` such that text from stdin is accepted as argument
+
+# Technical Todo
+- [ ] Reimplement the parse args function (i can barely understand it)
+- [ ] More consts where there should be consts
+- [ ] Proper unit tests
 
 ## Documentation
 
