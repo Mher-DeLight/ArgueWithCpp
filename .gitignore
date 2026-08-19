@@ -56,3 +56,4 @@ cmake-build-release/
 # Argue With Cpp Compiler
 ArgGrammar.awc
 test/argfile.h
+grammar.awc
